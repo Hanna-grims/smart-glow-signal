@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/page-header";
 import { detectionLogs, formatDateTime, type TrafficLightId } from "@/lib/traffic-data";
 import { SignalBadge } from "@/routes/traffic-light.$id";
 import { Search } from "lucide-react";
