@@ -31,7 +31,8 @@ function MonitorPage() {
   const light = trafficLights[id];
   const online = light.connection === "online";
   const recent = recentDetectionsFor(id);
-  const total = Object.values(light.vehicles).reduce((a, b) => a + b, 0);
+  const vehicles = getDailyVehicleCounts(id);
+  const total = vehicles.Car + vehicles.Motorcycle + vehicles.Truck;
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
