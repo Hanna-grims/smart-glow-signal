@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as LogsRouteImport } from './routes/logs'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrafficLightIdRouteImport } from './routes/traffic-light.$id'
 
@@ -22,6 +23,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const LogsRoute = LogsRouteImport.update({
   id: '/logs',
   path: '/logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const TrafficLightIdRoute = TrafficLightIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/logs': typeof LogsRoute
   '/settings': typeof SettingsRoute
   '/traffic-light/$id': typeof TrafficLightIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/logs': typeof LogsRoute
   '/settings': typeof SettingsRoute
   '/traffic-light/$id': typeof TrafficLightIdRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/logs': typeof LogsRoute
   '/settings': typeof SettingsRoute
   '/traffic-light/$id': typeof TrafficLightIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/logs' | '/settings' | '/traffic-light/$id'
+  fullPaths: '/' | '/about' | '/logs' | '/settings' | '/traffic-light/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/logs' | '/settings' | '/traffic-light/$id'
-  id: '__root__' | '/' | '/logs' | '/settings' | '/traffic-light/$id'
+  to: '/' | '/about' | '/logs' | '/settings' | '/traffic-light/$id'
+  id: '__root__' | '/' | '/about' | '/logs' | '/settings' | '/traffic-light/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   LogsRoute: typeof LogsRoute
   SettingsRoute: typeof SettingsRoute
   TrafficLightIdRoute: typeof TrafficLightIdRoute
@@ -85,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   LogsRoute: LogsRoute,
   SettingsRoute: SettingsRoute,
   TrafficLightIdRoute: TrafficLightIdRoute,
