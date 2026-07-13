@@ -71,12 +71,12 @@ function AboutPage() {
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
           {[
-            "React Native",
+            "React (TanStack Start)",
             "Raspberry Pi",
             "Pi Camera",
             "ESP32",
             "OpenCV",
-            "Supabase",
+            "Tailwind CSS",
             "REST / JSON",
             "Realtime Sync",
           ].map((t) => (
