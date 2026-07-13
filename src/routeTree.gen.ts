@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrafficLightIdRouteImport } from './routes/traffic-light.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrafficLightIdRoute = TrafficLightIdRouteImport.update({
+  id: '/traffic-light/$id',
+  path: '/traffic-light/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/traffic-light/$id': typeof TrafficLightIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/traffic-light/$id': typeof TrafficLightIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/traffic-light/$id': typeof TrafficLightIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/traffic-light/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/traffic-light/$id'
+  id: '__root__' | '/' | '/traffic-light/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TrafficLightIdRoute: typeof TrafficLightIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/traffic-light/$id': {
+      id: '/traffic-light/$id'
+      path: '/traffic-light/$id'
+      fullPath: '/traffic-light/$id'
+      preLoaderRoute: typeof TrafficLightIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TrafficLightIdRoute: TrafficLightIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

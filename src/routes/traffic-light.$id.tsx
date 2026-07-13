@@ -20,16 +20,13 @@ import { CameraPlaceholder, SignalIndicator } from "@/routes/index";
 import { Camera, RefreshCw, Wifi, WifiOff, Car, Bike, Truck, Bus, Timer, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/traffic-light/$id")({
-  loader: ({ params }) => {
-    const id = params.id.toUpperCase() as TrafficLightId;
-    if (id !== "A" && id !== "B") throw notFound();
-    return { id };
-  },
   component: MonitorPage,
 });
 
 function MonitorPage() {
-  const { id } = Route.useLoaderData();
+  const params = Route.useParams();
+  const id = params.id.toUpperCase() as TrafficLightId;
+  if (id !== "A" && id !== "B") throw notFound();
   const light = trafficLights[id];
   const online = light.connection === "online";
   const recent = recentDetectionsFor(id);
