@@ -36,27 +36,34 @@ function MonitorPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
-          <Button asChild variant="ghost" size="sm" className="-ml-2 mb-1 h-8 text-muted-foreground">
-            <Link to="/">
-              <ArrowLeft className="mr-1 h-4 w-4" /> Dashboard
-            </Link>
-          </Button>
-          <h1 className="text-3xl font-bold md:text-4xl"><span className="text-gradient-primary">{light.name}</span></h1>
-          <p className="mt-1 text-sm text-muted-foreground">{light.location}</p>
+      <div className="mb-6">
+        <Button asChild variant="ghost" size="sm" className="-ml-2 mb-2 h-8 text-muted-foreground">
+          <Link to="/">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Dashboard
+          </Link>
+        </Button>
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+          <div className="min-w-0">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+              Live Monitoring
+            </div>
+            <h1 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {light.name}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">{light.location}</p>
+          </div>
+          <Badge
+            variant="outline"
+            className={
+              online
+                ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
+                : "border-destructive/40 bg-destructive/10 text-destructive"
+            }
+          >
+            {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
+            {online ? "Online" : "Offline"}
+          </Badge>
         </div>
-        <Badge
-          variant="outline"
-          className={
-            online
-              ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
-              : "border-destructive/40 bg-destructive/10 text-destructive"
-          }
-        >
-          {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
-          {online ? "Online" : "Offline"}
-        </Badge>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

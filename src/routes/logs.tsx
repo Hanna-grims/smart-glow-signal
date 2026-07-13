@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/page-header";
 import { detectionLogs, formatDateTime, type TrafficLightId } from "@/lib/traffic-data";
 import { SignalBadge } from "@/routes/traffic-light.$id";
 import { Search } from "lucide-react";
@@ -45,10 +46,11 @@ function LogsPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
-      <h1 className="text-3xl font-bold md:text-4xl">Detection Logs</h1>
-      <p className="mt-2 text-muted-foreground">
-        Search and filter recorded vehicle detections from both traffic lights.
-      </p>
+      <PageHeader
+        eyebrow="Records"
+        title="Detection Logs"
+        description="Search and filter recorded vehicle detections from both traffic lights. Historical entries are retained; daily counters reset each day."
+      />
 
       <Card className="mt-6 shadow-soft">
         <CardContent className="p-4">
