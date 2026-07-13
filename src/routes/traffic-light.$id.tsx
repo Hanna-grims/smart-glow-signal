@@ -14,10 +14,11 @@ import {
   trafficLights,
   recentDetectionsFor,
   formatTime,
+  getDailyVehicleCounts,
   type TrafficLightId,
 } from "@/lib/traffic-data";
 import { CameraPlaceholder, SignalIndicator } from "@/routes/index";
-import { Camera, RefreshCw, Wifi, WifiOff, Car, Bike, Truck, Bus, Timer, ArrowLeft } from "lucide-react";
+import { Camera, RefreshCw, Wifi, WifiOff, Car, Bike, Truck, Timer, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/traffic-light/$id")({
   component: MonitorPage,
@@ -30,7 +31,8 @@ function MonitorPage() {
   const light = trafficLights[id];
   const online = light.connection === "online";
   const recent = recentDetectionsFor(id);
-  const total = Object.values(light.vehicles).reduce((a, b) => a + b, 0);
+  const vehicles = getDailyVehicleCounts(id);
+  const total = vehicles.Car + vehicles.Motorcycle + vehicles.Truck;
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
@@ -41,7 +43,7 @@ function MonitorPage() {
               <ArrowLeft className="mr-1 h-4 w-4" /> Dashboard
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold md:text-4xl">{light.name}</h1>
+          <h1 className="text-3xl font-bold md:text-4xl"><span className="text-gradient-primary">{light.name}</span></h1>
           <p className="mt-1 text-sm text-muted-foreground">{light.location}</p>
         </div>
         <Badge
@@ -123,13 +125,17 @@ function MonitorPage() {
 
       {/* Vehicle Detection */}
       <div className="mt-8">
-        <h2 className="mb-4 text-xl font-semibold">Vehicle Detection</h2>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-          <VehicleStat label="Total" value={total} accent />
-          <VehicleStat label="Cars" value={light.vehicles.Car} icon={<Car className="h-4 w-4" />} />
-          <VehicleStat label="Motorcycles" value={light.vehicles.Motorcycle} icon={<Bike className="h-4 w-4" />} />
-          <VehicleStat label="Trucks" value={light.vehicles.Truck} icon={<Truck className="h-4 w-4" />} />
-          <VehicleStat label="Buses" value={light.vehicles.Bus} icon={<Bus className="h-4 w-4" />} />
+        <div className="mb-4 flex items-end justify-between">
+          <h2 className="text-xl font-semibold">Vehicle Detection</h2>
+          <span className="text-xs text-muted-foreground">
+            Counts reset daily · Logs are kept
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <VehicleStat label="Total Today" value={total} accent />
+          <VehicleStat label="Cars" value={vehicles.Car} icon={<Car className="h-4 w-4" />} />
+          <VehicleStat label="Motorcycles" value={vehicles.Motorcycle} icon={<Bike className="h-4 w-4" />} />
+          <VehicleStat label="Trucks" value={vehicles.Truck} icon={<Truck className="h-4 w-4" />} />
         </div>
       </div>
 

@@ -13,9 +13,11 @@ function Dashboard() {
   const lights = [trafficLights.A, trafficLights.B];
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold md:text-4xl">Dashboard</h1>
-        <p className="mt-2 text-muted-foreground">
+      <div className="mb-8 rounded-3xl border border-border bg-gradient-hero p-6 md:p-8">
+        <h1 className="text-3xl font-bold md:text-4xl">
+          <span className="text-gradient-primary">Operator Dashboard</span>
+        </h1>
+        <p className="mt-2 max-w-xl text-muted-foreground">
           Select a traffic light to open its live monitoring view.
         </p>
       </div>
