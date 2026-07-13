@@ -125,13 +125,17 @@ function MonitorPage() {
 
       {/* Vehicle Detection */}
       <div className="mt-8">
-        <h2 className="mb-4 text-xl font-semibold">Vehicle Detection</h2>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-          <VehicleStat label="Total" value={total} accent />
-          <VehicleStat label="Cars" value={light.vehicles.Car} icon={<Car className="h-4 w-4" />} />
-          <VehicleStat label="Motorcycles" value={light.vehicles.Motorcycle} icon={<Bike className="h-4 w-4" />} />
-          <VehicleStat label="Trucks" value={light.vehicles.Truck} icon={<Truck className="h-4 w-4" />} />
-          <VehicleStat label="Buses" value={light.vehicles.Bus} icon={<Bus className="h-4 w-4" />} />
+        <div className="mb-4 flex items-end justify-between">
+          <h2 className="text-xl font-semibold">Vehicle Detection</h2>
+          <span className="text-xs text-muted-foreground">
+            Counts reset daily · Logs are kept
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <VehicleStat label="Total Today" value={total} accent />
+          <VehicleStat label="Cars" value={vehicles.Car} icon={<Car className="h-4 w-4" />} />
+          <VehicleStat label="Motorcycles" value={vehicles.Motorcycle} icon={<Bike className="h-4 w-4" />} />
+          <VehicleStat label="Trucks" value={vehicles.Truck} icon={<Truck className="h-4 w-4" />} />
         </div>
       </div>
 
