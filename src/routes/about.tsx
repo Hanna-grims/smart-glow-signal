@@ -34,10 +34,10 @@ function AboutPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2 text-sm">
-              <li>• Member One (Placeholder)</li>
-              <li>• Member Two (Placeholder)</li>
-              <li>• Member Three (Placeholder)</li>
+            <ul className="list-disc space-y-2 pl-5 text-sm marker:text-primary">
+              <li>Member One (Placeholder)</li>
+              <li>Member Two (Placeholder)</li>
+              <li>Member Three (Placeholder)</li>
             </ul>
           </CardContent>
         </Card>
