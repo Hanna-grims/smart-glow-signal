@@ -30,11 +30,18 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-2 py-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-soft">
-            <CircleDot className="h-5 w-5" />
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-primary p-1.5 shadow-soft ring-1 ring-white/40">
+            <img
+              src={logoUrl}
+              alt="ATMSCS logo"
+              width={512}
+              height={512}
+              loading="lazy"
+              className="h-full w-full object-contain [filter:brightness(0)_invert(1)]"
+            />
           </div>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
-            <div className="truncate font-display text-sm font-bold">ATMSCS</div>
+            <div className="truncate font-display text-sm font-bold tracking-tight">ATMSCS</div>
             <div className="truncate text-xs text-muted-foreground">Traffic Control</div>
           </div>
         </div>
