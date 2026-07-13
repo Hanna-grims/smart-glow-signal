@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, TrafficCone, ListChecks, Settings, Info, CircleDot } from "lucide-react";
+import { LayoutDashboard, TrafficCone, ListChecks, Settings, Info } from "lucide-react";
+import logoUrl from "@/assets/atmscs-logo.png";
 import {
   Sidebar,
   SidebarContent,
