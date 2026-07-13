@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/page-header";
 import { trafficLights, type TrafficLight } from "@/lib/traffic-data";
 import { Camera, Wifi, WifiOff, ArrowRight, Activity, Timer } from "lucide-react";
 
@@ -13,14 +14,11 @@ function Dashboard() {
   const lights = [trafficLights.A, trafficLights.B];
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
-      <div className="mb-8 rounded-3xl border border-border bg-gradient-hero p-6 md:p-8">
-        <h1 className="text-3xl font-bold md:text-4xl">
-          <span className="text-gradient-primary">Operator Dashboard</span>
-        </h1>
-        <p className="mt-2 max-w-xl text-muted-foreground">
-          Select a traffic light to open its live monitoring view.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Operator Dashboard"
+        title="Live Traffic Overview"
+        description="Select a traffic light to open its live monitoring view."
+      />
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatMini icon={<Activity className="h-4 w-4" />} label="Active Signals" value="2 / 2" />
