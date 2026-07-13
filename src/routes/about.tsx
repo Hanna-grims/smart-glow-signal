@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Users, Building2, TrafficCone } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
+import { GraduationCap, Users, Building2 } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -19,18 +20,11 @@ export const Route = createFileRoute("/about")({
 function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 md:px-8">
-      <div className="flex items-start gap-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-soft">
-          <TrafficCone className="h-7 w-7" />
-        </div>
-        <div className="min-w-0">
-          <h1 className="text-3xl font-bold md:text-4xl">Adaptive Traffic Monitoring & Signal Control System</h1>
-          <p className="mt-2 text-muted-foreground">
-            An engineering thesis project focused on real-time, camera-driven adaptive traffic signal control
-            for two-way intersections using edge computing and computer vision.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow="Thesis Project"
+        title="Adaptive Traffic Monitoring & Signal Control System"
+        description="An undergraduate engineering thesis on real-time, camera-driven adaptive traffic signal control for two-way intersections using edge computing and computer vision."
+      />
 
       <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card className="shadow-soft">
