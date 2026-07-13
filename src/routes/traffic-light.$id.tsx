@@ -43,7 +43,7 @@ function MonitorPage() {
               <ArrowLeft className="mr-1 h-4 w-4" /> Dashboard
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold md:text-4xl">{light.name}</h1>
+          <h1 className="text-3xl font-bold md:text-4xl"><span className="text-gradient-primary">{light.name}</span></h1>
           <p className="mt-1 text-sm text-muted-foreground">{light.location}</p>
         </div>
         <Badge
