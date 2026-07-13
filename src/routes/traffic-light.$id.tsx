@@ -14,10 +14,11 @@ import {
   trafficLights,
   recentDetectionsFor,
   formatTime,
+  getDailyVehicleCounts,
   type TrafficLightId,
 } from "@/lib/traffic-data";
 import { CameraPlaceholder, SignalIndicator } from "@/routes/index";
-import { Camera, RefreshCw, Wifi, WifiOff, Car, Bike, Truck, Bus, Timer, ArrowLeft } from "lucide-react";
+import { Camera, RefreshCw, Wifi, WifiOff, Car, Bike, Truck, Timer, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/traffic-light/$id")({
   component: MonitorPage,
