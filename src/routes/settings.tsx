@@ -32,8 +32,12 @@ function SettingsPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8 md:px-8">
-      <h1 className="text-3xl font-bold md:text-4xl">Settings</h1>
-      <p className="mt-2 text-muted-foreground">Configure the operator dashboard.</p>
+      <PageHeader
+        eyebrow="Configuration"
+        title="Settings"
+        description="Configure the operator dashboard and connected hardware."
+      />
+
 
       <div className="mt-6 space-y-6">
         <Card className="shadow-soft">
