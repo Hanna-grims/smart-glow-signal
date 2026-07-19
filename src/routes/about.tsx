@@ -22,8 +22,8 @@ function AboutPage() {
     <div className="mx-auto w-full max-w-4xl px-4 py-8 md:px-8">
       <PageHeader
         eyebrow="Thesis Project"
-        title="Adaptive Traffic Monitoring & Signal Control System"
-        description="An undergraduate engineering thesis on real-time, camera-driven adaptive traffic signal control for two-way intersections using edge computing and computer vision."
+        title="VC-Lane Traffic Monitoring & Signal Control System"
+        description="An undergraduate engineering thesis on real-time, camera-driven adaptive traffic signal control for two-way intersections using AI image processing."
       />
 
       <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -35,9 +35,9 @@ function AboutPage() {
           </CardHeader>
           <CardContent>
             <ul className="list-disc space-y-2 pl-5 text-sm marker:text-primary">
-              <li>Member One (Placeholder)</li>
-              <li>Member Two (Placeholder)</li>
-              <li>Member Three (Placeholder)</li>
+              <li>Anne Mariel Caro</li>
+              <li>Hannah Joy Grimaldo</li>
+              <li>Kimberly Postrado</li>
             </ul>
           </CardContent>
         </Card>
@@ -49,7 +49,7 @@ function AboutPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">Engr. Adviser Name (Placeholder)</p>
+            <p className="text-sm">Engr. Jerold Lantoria</p>
           </CardContent>
         </Card>
 
@@ -60,7 +60,7 @@ function AboutPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm">University Name (Placeholder) — College of Engineering</p>
+            <p className="text-sm">Marinduque State University— College of Engineering</p>
           </CardContent>
         </Card>
       </div>
