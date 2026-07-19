@@ -10,15 +10,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CameraFeed, SignalIndicator, SignalBadge } from "@/components/camera-feed";
 import {
-  trafficLights,
-  recentDetectionsFor,
+  useTrafficLight,
+  useDetections,
+  useSetSignal,
+  dailyCounts,
   formatTime,
-  getDailyVehicleCounts,
+  timeAgo,
   type TrafficLightId,
-} from "@/lib/traffic-data";
-import { CameraPlaceholder, SignalIndicator } from "@/routes/index";
-import { Camera, RefreshCw, Wifi, WifiOff, Car, Bike, Truck, Timer, ArrowLeft } from "lucide-react";
+} from "@/lib/traffic-api";
+import {
+  Camera,
+  Wifi,
+  WifiOff,
+  Car,
+  Bike,
+  Truck,
+  Timer,
+  ArrowLeft,
+  Play,
+  Pause,
+  RotateCcw,
+} from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/traffic-light/$id")({
   component: MonitorPage,
@@ -28,11 +43,43 @@ function MonitorPage() {
   const params = Route.useParams();
   const id = params.id.toUpperCase() as TrafficLightId;
   if (id !== "A" && id !== "B") throw notFound();
-  const light = trafficLights[id];
+
+  const { data: light, isLoading } = useTrafficLight(id);
+  const { data: detections = [] } = useDetections();
+  const setSignal = useSetSignal();
+
+  if (isLoading || !light) {
+    return (
+      <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8 text-sm text-muted-foreground">
+        Loading Traffic Light {id}…
+      </div>
+    );
+  }
+
   const online = light.connection === "online";
-  const recent = recentDetectionsFor(id);
-  const vehicles = getDailyVehicleCounts(id);
+  const recent = detections.filter((d) => d.light_id === id).slice(0, 8);
+  const vehicles = dailyCounts(detections, id);
   const total = vehicles.Car + vehicles.Motorcycle + vehicles.Truck;
+
+  const applyManual = (signal: "GREEN" | "RED") => {
+    setSignal.mutate(
+      { id, mode: "MANUAL", manual_signal: signal },
+      {
+        onSuccess: () => toast.success(`${light.name} forced to ${signal}`),
+        onError: (e) => toast.error(`Failed: ${e.message}`),
+      },
+    );
+  };
+
+  const returnToAuto = () => {
+    setSignal.mutate(
+      { id, mode: "AUTO" },
+      {
+        onSuccess: () => toast.success(`${light.name} switched to AUTO`),
+        onError: (e) => toast.error(`Failed: ${e.message}`),
+      },
+    );
+  };
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
@@ -52,50 +99,59 @@ function MonitorPage() {
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">{light.location}</p>
           </div>
-          <Badge
-            variant="outline"
-            className={
-              online
-                ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
-                : "border-destructive/40 bg-destructive/10 text-destructive"
-            }
-          >
-            {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
-            {online ? "Online" : "Offline"}
-          </Badge>
+          <div className="flex flex-col items-end gap-1">
+            <Badge
+              variant="outline"
+              className={
+                online
+                  ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
+                  : "border-destructive/40 bg-destructive/10 text-destructive"
+              }
+            >
+              {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
+              {online ? "Online" : "Offline"}
+            </Badge>
+            <span className="text-xs text-muted-foreground">Last seen: {timeAgo(light.last_seen)}</span>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Camera Feed */}
         <Card className="lg:col-span-2 shadow-soft">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <div>
-              <CardTitle className="text-lg">Live Raspberry Pi Camera Feed</CardTitle>
-              <p className="mt-1 text-xs text-muted-foreground">Last updated: {light.lastUpdated}</p>
+          <CardHeader className="pb-3">
+            <div className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-lg">Live Camera Feed</CardTitle>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Source: Raspberry Pi Cam (MJPEG/HTTP)
+                </p>
+              </div>
+              <Badge variant="outline" className="rounded-full">
+                Mode: {light.mode}
+              </Badge>
             </div>
-            <Button size="sm" variant="outline" className="rounded-full">
-              <RefreshCw className="mr-1 h-3.5 w-3.5" /> Refresh
-            </Button>
           </CardHeader>
           <CardContent>
-            <CameraPlaceholder />
+            <CameraFeed streamUrl={light.stream_url} online={online} />
             <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
-                <Camera className="h-3.5 w-3.5" /> Camera Status:{" "}
-                <span className={online ? "text-signal-green" : "text-destructive"}>
-                  {online ? "Streaming" : "Disconnected"}
+                <Camera className="h-3.5 w-3.5" /> Camera:{" "}
+                <span className={light.stream_url ? "text-signal-green" : "text-muted-foreground"}>
+                  {light.stream_url ? "Configured" : "Not configured"}
                 </span>
               </span>
-              <span>·</span>
-              <span>Resolution: 1280×720</span>
-              <span>·</span>
-              <span>Source: Raspberry Pi Cam</span>
+              {light.stream_url && (
+                <>
+                  <span>·</span>
+                  <span className="truncate max-w-[280px]">URL: {light.stream_url}</span>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Signal + Wait */}
+        {/* Signal + Manual Control */}
         <div className="flex flex-col gap-6">
           <Card className="shadow-soft">
             <CardHeader className="pb-2">
@@ -116,14 +172,49 @@ function MonitorPage() {
             </CardContent>
           </Card>
 
+          <Card className="shadow-soft border-primary/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Operator Control</CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Override the automatic controller. ESP32 will apply within its next poll.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() => applyManual("GREEN")}
+                  disabled={setSignal.isPending}
+                  className="bg-signal-green text-white hover:bg-signal-green/90"
+                >
+                  <Play className="mr-1 h-4 w-4" /> Force GO
+                </Button>
+                <Button
+                  onClick={() => applyManual("RED")}
+                  disabled={setSignal.isPending}
+                  variant="destructive"
+                >
+                  <Pause className="mr-1 h-4 w-4" /> Force STOP
+                </Button>
+              </div>
+              <Button
+                onClick={returnToAuto}
+                disabled={setSignal.isPending || light.mode === "AUTO"}
+                variant="outline"
+                className="w-full"
+              >
+                <RotateCcw className="mr-1 h-4 w-4" /> Return to AUTO
+              </Button>
+            </CardContent>
+          </Card>
+
           <Card className="shadow-soft">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Timer className="h-4 w-4 text-primary" /> Current Waiting Time
+                <Timer className="h-4 w-4 text-primary" /> Waiting Time
               </CardTitle>
             </CardHeader>
             <CardContent className="py-6 text-center">
-              <div className="text-5xl font-bold text-primary">{light.waitingTime}</div>
+              <div className="text-5xl font-bold text-primary">{light.waiting_time}</div>
               <div className="mt-1 text-xs text-muted-foreground">seconds</div>
             </CardContent>
           </Card>
@@ -160,15 +251,23 @@ function MonitorPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recent.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="font-mono text-xs">{formatTime(r.timestamp)}</TableCell>
-                    <TableCell>{r.vehicleType}</TableCell>
-                    <TableCell className="text-right">
-                      <SignalBadge signal={r.signal} />
+                {recent.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="py-8 text-center text-sm text-muted-foreground">
+                      No detections yet. Have the Pi POST to /api/public/devices/detection.
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  recent.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-mono text-xs">{formatTime(r.detected_at)}</TableCell>
+                      <TableCell>{r.vehicle_type}</TableCell>
+                      <TableCell className="text-right">
+                        <SignalBadge signal={r.signal} />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>
@@ -199,20 +298,5 @@ function VehicleStat({
         <div className={`mt-2 text-2xl font-bold ${accent ? "text-primary" : ""}`}>{value}</div>
       </CardContent>
     </Card>
-  );
-}
-
-export function SignalBadge({ signal }: { signal: "GREEN" | "RED" }) {
-  if (signal === "GREEN") {
-    return (
-      <Badge className="border-signal-green/40 bg-signal-green/10 text-signal-green" variant="outline">
-        GO
-      </Badge>
-    );
-  }
-  return (
-    <Badge className="border-destructive/40 bg-destructive/10 text-destructive" variant="outline">
-      STOP
-    </Badge>
   );
 }
