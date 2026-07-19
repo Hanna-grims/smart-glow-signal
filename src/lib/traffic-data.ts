@@ -126,3 +126,84 @@ export function formatDateTime(iso: string): string {
     second: "2-digit",
   });
 }
+
+// ============= Recordings (CCTV-style archive) =============
+
+export interface Recording {
+  id: string;
+  trafficLight: TrafficLightId;
+  /** ISO date (YYYY-MM-DD) the clip was captured on. */
+  date: string;
+  /** Start time of the clip, e.g. "08:15". */
+  startTime: string;
+  /** Duration in seconds. */
+  duration: number;
+  /** Number of vehicle events detected in the clip. */
+  events: number;
+  /** Thumbnail placeholder label (e.g. "Morning", "Midday"). */
+  segment: "Morning" | "Midday" | "Afternoon" | "Evening" | "Night";
+}
+
+function pad(n: number): string {
+  return n.toString().padStart(2, "0");
+}
+
+function makeRecordings(): Recording[] {
+  const out: Recording[] = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const segments: Array<{ start: string; label: Recording["segment"] }> = [
+    { start: "06:00", label: "Morning" },
+    { start: "10:30", label: "Midday" },
+    { start: "14:00", label: "Afternoon" },
+    { start: "17:30", label: "Evening" },
+    { start: "21:00", label: "Night" },
+  ];
+
+  for (let d = 0; d <= 6; d++) {
+    const day = new Date(today.getTime() - d * 86_400_000);
+    const date = `${day.getFullYear()}-${pad(day.getMonth() + 1)}-${pad(day.getDate())}`;
+    for (const light of ["A", "B"] as TrafficLightId[]) {
+      segments.forEach((seg, i) => {
+        out.push({
+          id: `rec-${date}-${light}-${i}`,
+          trafficLight: light,
+          date,
+          startTime: seg.start,
+          duration: 900 + ((d + i) % 5) * 120, // 15–23 min
+          events: 8 + ((d * 3 + i * 5 + (light === "A" ? 1 : 2)) % 22),
+          segment: seg.label,
+        });
+      });
+    }
+  }
+  return out;
+}
+
+export const recordings: Recording[] = makeRecordings();
+
+export function recordingsFor(id: TrafficLightId | "ALL", date?: string): Recording[] {
+  return recordings.filter(
+    (r) => (id === "ALL" || r.trafficLight === id) && (!date || r.date === date),
+  );
+}
+
+export function recordingDates(): string[] {
+  return Array.from(new Set(recordings.map((r) => r.date))).sort((a, b) => b.localeCompare(a));
+}
+
+export function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${pad(s)}`;
+}
+
+export function formatDateLabel(iso: string): string {
+  const d = new Date(iso + "T00:00:00");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diff = Math.round((today.getTime() - d.getTime()) / 86_400_000);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Yesterday";
+  return d.toLocaleDateString([], { weekday: "short", month: "short", day: "2-digit" });
+}
