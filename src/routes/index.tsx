@@ -3,15 +3,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
-import { trafficLights, type TrafficLight } from "@/lib/traffic-data";
-import { Camera, Wifi, WifiOff, ArrowRight, Activity, Timer } from "lucide-react";
+import { CameraFeed, SignalIndicator } from "@/components/camera-feed";
+import {
+  useTrafficLights,
+  useDetections,
+  dailyCounts,
+  timeAgo,
+  type TrafficLight,
+} from "@/lib/traffic-api";
+import { Wifi, WifiOff, ArrowRight, Activity, Camera, Timer } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
 function Dashboard() {
-  const lights = [trafficLights.A, trafficLights.B];
+  const { data: lights = [], isLoading } = useTrafficLights();
+  const { data: detections = [] } = useDetections();
+
+  const onlineCount = lights.filter((l) => l.connection === "online").length;
+  const cameras = lights.filter((l) => l.stream_url && l.connection === "online").length;
+  const avgWait = lights.length
+    ? Math.round(lights.reduce((s, l) => s + (l.waiting_time || 0), 0) / lights.length)
+    : 0;
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
       <PageHeader
@@ -21,16 +36,22 @@ function Dashboard() {
       />
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatMini icon={<Activity className="h-4 w-4" />} label="Active Signals" value="2 / 2" />
-        <StatMini icon={<Camera className="h-4 w-4" />} label="Cameras Online" value="2" />
-        <StatMini icon={<Timer className="h-4 w-4" />} label="Avg. Wait" value="19s" />
+        <StatMini icon={<Activity className="h-4 w-4" />} label="Active Signals" value={`${onlineCount} / ${lights.length}`} />
+        <StatMini icon={<Camera className="h-4 w-4" />} label="Cameras Online" value={String(cameras)} />
+        <StatMini icon={<Timer className="h-4 w-4" />} label="Avg. Wait" value={`${avgWait}s`} />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {lights.map((l) => (
-          <LightCard key={l.id} light={l} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="text-sm text-muted-foreground">Loading live data…</div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {lights.map((l) => {
+            const counts = dailyCounts(detections, l.id);
+            const total = counts.Car + counts.Motorcycle + counts.Truck;
+            return <LightCard key={l.id} light={l} todayTotal={total} />;
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -49,7 +70,7 @@ function StatMini({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
-function LightCard({ light }: { light: TrafficLight }) {
+function LightCard({ light, todayTotal }: { light: TrafficLight; todayTotal: number }) {
   const online = light.connection === "online";
   return (
     <Card className="overflow-hidden border-border shadow-soft transition-transform hover:-translate-y-0.5">
@@ -57,27 +78,36 @@ function LightCard({ light }: { light: TrafficLight }) {
         <div className="min-w-0">
           <CardTitle className="truncate text-xl">{light.name}</CardTitle>
           <p className="mt-1 truncate text-sm text-muted-foreground">{light.location}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Last seen: {timeAgo(light.last_seen)}</p>
         </div>
-        <Badge
-          variant="outline"
-          className={
-            online
-              ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
-              : "border-destructive/40 bg-destructive/10 text-destructive"
-          }
-        >
-          {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
-          {online ? "Online" : "Offline"}
-        </Badge>
+        <div className="flex flex-col items-end gap-1">
+          <Badge
+            variant="outline"
+            className={
+              online
+                ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
+                : "border-destructive/40 bg-destructive/10 text-destructive"
+            }
+          >
+            {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
+            {online ? "Online" : "Offline"}
+          </Badge>
+          {light.mode === "MANUAL" && (
+            <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary">
+              Manual
+            </Badge>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <CameraPlaceholder />
+        <CameraFeed streamUrl={light.stream_url} online={online} />
         <div className="flex items-center justify-between rounded-xl border border-border bg-muted/40 px-4 py-3">
           <div>
             <div className="text-xs text-muted-foreground">Current Signal</div>
             <div className="mt-1 text-lg font-semibold">
-              {light.signal === "GREEN" ? "GO" : "STOP"}
+              {light.signal === "GREEN" ? "GO" : light.signal === "RED" ? "STOP" : "YIELD"}
             </div>
+            <div className="text-xs text-muted-foreground">Today: {todayTotal} vehicles</div>
           </div>
           <SignalIndicator signal={light.signal} />
         </div>
@@ -89,38 +119,5 @@ function LightCard({ light }: { light: TrafficLight }) {
         </Button>
       </CardContent>
     </Card>
-  );
-}
-
-export function CameraPlaceholder() {
-  return (
-    <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-gradient-to-br from-muted to-accent/40">
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-          <Camera className="h-8 w-8" />
-          <span className="text-xs font-medium">Camera Preview</span>
-        </div>
-      </div>
-      <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-background/80 px-2 py-1 text-xs backdrop-blur">
-        <span className="h-2 w-2 animate-pulse-glow rounded-full bg-destructive" />
-        LIVE
-      </div>
-    </div>
-  );
-}
-
-export function SignalIndicator({ signal, size = "md" }: { signal: "GREEN" | "RED"; size?: "sm" | "md" | "lg" }) {
-  const dim = size === "sm" ? "h-4 w-4" : size === "lg" ? "h-12 w-12" : "h-8 w-8";
-  return (
-    <div className="flex items-center gap-2">
-      <div
-        className={`${dim} rounded-full ${signal === "GREEN" ? "signal-dot-green animate-pulse-glow" : "signal-dot-dim"}`}
-        aria-label="Green signal"
-      />
-      <div
-        className={`${dim} rounded-full ${signal === "RED" ? "signal-dot-red animate-pulse-glow" : "signal-dot-dim"}`}
-        aria-label="Red signal"
-      />
-    </div>
   );
 }

@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
-import { detectionLogs, formatDateTime, type TrafficLightId } from "@/lib/traffic-data";
-import { SignalBadge } from "@/routes/traffic-light.$id";
+import { useDetections, formatDateTime, type TrafficLightId } from "@/lib/traffic-api";
+import { SignalBadge } from "@/components/camera-feed";
 import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/logs")({
@@ -24,25 +24,26 @@ function LogsPage() {
   const [query, setQuery] = useState("");
   const [light, setLight] = useState<TrafficLightId | "ALL">("ALL");
   const [date, setDate] = useState("");
+  const { data: detections = [], isLoading } = useDetections(2000);
 
   const filtered = useMemo(() => {
-    return detectionLogs.filter((log) => {
-      if (light !== "ALL" && log.trafficLight !== light) return false;
+    return detections.filter((log) => {
+      if (light !== "ALL" && log.light_id !== light) return false;
       if (date) {
-        const d = new Date(log.timestamp).toISOString().slice(0, 10);
+        const d = new Date(log.detected_at).toISOString().slice(0, 10);
         if (d !== date) return false;
       }
       if (query) {
         const q = query.toLowerCase();
         return (
-          log.vehicleType.toLowerCase().includes(q) ||
-          log.signal.toLowerCase().includes(q) ||
-          log.trafficLight.toLowerCase().includes(q)
+          log.vehicle_type.toLowerCase().includes(q) ||
+          (log.signal ?? "").toLowerCase().includes(q) ||
+          log.light_id.toLowerCase().includes(q)
         );
       }
       return true;
     });
-  }, [query, light, date]);
+  }, [detections, query, light, date]);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
@@ -99,7 +100,13 @@ function LogsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.length === 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="py-8 text-center text-sm text-muted-foreground">
+                    Loading…
+                  </TableCell>
+                </TableRow>
+              ) : filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="py-8 text-center text-sm text-muted-foreground">
                     No detections match your filters.
@@ -108,13 +115,13 @@ function LogsPage() {
               ) : (
                 filtered.map((l) => (
                   <TableRow key={l.id}>
-                    <TableCell className="font-mono text-xs">{formatDateTime(l.timestamp)}</TableCell>
+                    <TableCell className="font-mono text-xs">{formatDateTime(l.detected_at)}</TableCell>
                     <TableCell>
                       <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                        Light {l.trafficLight}
+                        Light {l.light_id}
                       </span>
                     </TableCell>
-                    <TableCell>{l.vehicleType}</TableCell>
+                    <TableCell>{l.vehicle_type}</TableCell>
                     <TableCell className="text-right">
                       <SignalBadge signal={l.signal} />
                     </TableCell>
