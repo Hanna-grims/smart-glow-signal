@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, TrafficCone, ListChecks, Settings, Info } from "lucide-react";
+import { LayoutDashboard, TrafficCone, ListChecks, Settings, Info, Video } from "lucide-react";
 import logoUrl from "@/assets/atmscs-logo.png";
 import {
   Sidebar,
@@ -18,6 +18,7 @@ const nav = [
   { title: "Traffic Light A", url: "/traffic-light/A", icon: TrafficCone },
   { title: "Traffic Light B", url: "/traffic-light/B", icon: TrafficCone },
   { title: "Detection Logs", url: "/logs", icon: ListChecks },
+  { title: "Recordings", url: "/recordings", icon: Video },
   { title: "Settings", url: "/settings", icon: Settings },
   { title: "About", url: "/about", icon: Info },
 ];
