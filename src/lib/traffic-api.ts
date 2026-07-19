@@ -122,7 +122,11 @@ export function useSetSignal() {
       mode: ControlMode;
       manual_signal?: SignalStatus | null;
     }) => {
-      const patch: Record<string, unknown> = { mode };
+      const patch: {
+        mode: ControlMode;
+        manual_signal?: SignalStatus | null;
+        signal?: SignalStatus;
+      } = { mode };
       if (mode === "MANUAL" && manual_signal) {
         patch.manual_signal = manual_signal;
         patch.signal = manual_signal;

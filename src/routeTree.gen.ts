@@ -15,6 +15,9 @@ import { Route as LogsRouteImport } from './routes/logs'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrafficLightIdRouteImport } from './routes/traffic-light.$id'
+import { Route as ApiPublicDevicesHeartbeatRouteImport } from './routes/api/public/devices/heartbeat'
+import { Route as ApiPublicDevicesDetectionRouteImport } from './routes/api/public/devices/detection'
+import { Route as ApiPublicDevicesSignalIdRouteImport } from './routes/api/public/devices/signal.$id'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -46,6 +49,24 @@ const TrafficLightIdRoute = TrafficLightIdRouteImport.update({
   path: '/traffic-light/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDevicesHeartbeatRoute =
+  ApiPublicDevicesHeartbeatRouteImport.update({
+    id: '/api/public/devices/heartbeat',
+    path: '/api/public/devices/heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicDevicesDetectionRoute =
+  ApiPublicDevicesDetectionRouteImport.update({
+    id: '/api/public/devices/detection',
+    path: '/api/public/devices/detection',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicDevicesSignalIdRoute =
+  ApiPublicDevicesSignalIdRouteImport.update({
+    id: '/api/public/devices/signal/$id',
+    path: '/api/public/devices/signal/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +75,9 @@ export interface FileRoutesByFullPath {
   '/recordings': typeof RecordingsRoute
   '/settings': typeof SettingsRoute
   '/traffic-light/$id': typeof TrafficLightIdRoute
+  '/api/public/devices/detection': typeof ApiPublicDevicesDetectionRoute
+  '/api/public/devices/heartbeat': typeof ApiPublicDevicesHeartbeatRoute
+  '/api/public/devices/signal/$id': typeof ApiPublicDevicesSignalIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +86,9 @@ export interface FileRoutesByTo {
   '/recordings': typeof RecordingsRoute
   '/settings': typeof SettingsRoute
   '/traffic-light/$id': typeof TrafficLightIdRoute
+  '/api/public/devices/detection': typeof ApiPublicDevicesDetectionRoute
+  '/api/public/devices/heartbeat': typeof ApiPublicDevicesHeartbeatRoute
+  '/api/public/devices/signal/$id': typeof ApiPublicDevicesSignalIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +98,9 @@ export interface FileRoutesById {
   '/recordings': typeof RecordingsRoute
   '/settings': typeof SettingsRoute
   '/traffic-light/$id': typeof TrafficLightIdRoute
+  '/api/public/devices/detection': typeof ApiPublicDevicesDetectionRoute
+  '/api/public/devices/heartbeat': typeof ApiPublicDevicesHeartbeatRoute
+  '/api/public/devices/signal/$id': typeof ApiPublicDevicesSignalIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +111,9 @@ export interface FileRouteTypes {
     | '/recordings'
     | '/settings'
     | '/traffic-light/$id'
+    | '/api/public/devices/detection'
+    | '/api/public/devices/heartbeat'
+    | '/api/public/devices/signal/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +122,9 @@ export interface FileRouteTypes {
     | '/recordings'
     | '/settings'
     | '/traffic-light/$id'
+    | '/api/public/devices/detection'
+    | '/api/public/devices/heartbeat'
+    | '/api/public/devices/signal/$id'
   id:
     | '__root__'
     | '/'
@@ -97,6 +133,9 @@ export interface FileRouteTypes {
     | '/recordings'
     | '/settings'
     | '/traffic-light/$id'
+    | '/api/public/devices/detection'
+    | '/api/public/devices/heartbeat'
+    | '/api/public/devices/signal/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +145,9 @@ export interface RootRouteChildren {
   RecordingsRoute: typeof RecordingsRoute
   SettingsRoute: typeof SettingsRoute
   TrafficLightIdRoute: typeof TrafficLightIdRoute
+  ApiPublicDevicesDetectionRoute: typeof ApiPublicDevicesDetectionRoute
+  ApiPublicDevicesHeartbeatRoute: typeof ApiPublicDevicesHeartbeatRoute
+  ApiPublicDevicesSignalIdRoute: typeof ApiPublicDevicesSignalIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +194,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrafficLightIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/devices/heartbeat': {
+      id: '/api/public/devices/heartbeat'
+      path: '/api/public/devices/heartbeat'
+      fullPath: '/api/public/devices/heartbeat'
+      preLoaderRoute: typeof ApiPublicDevicesHeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/devices/detection': {
+      id: '/api/public/devices/detection'
+      path: '/api/public/devices/detection'
+      fullPath: '/api/public/devices/detection'
+      preLoaderRoute: typeof ApiPublicDevicesDetectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/devices/signal/$id': {
+      id: '/api/public/devices/signal/$id'
+      path: '/api/public/devices/signal/$id'
+      fullPath: '/api/public/devices/signal/$id'
+      preLoaderRoute: typeof ApiPublicDevicesSignalIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,6 +225,9 @@ const rootRouteChildren: RootRouteChildren = {
   RecordingsRoute: RecordingsRoute,
   SettingsRoute: SettingsRoute,
   TrafficLightIdRoute: TrafficLightIdRoute,
+  ApiPublicDevicesDetectionRoute: ApiPublicDevicesDetectionRoute,
+  ApiPublicDevicesHeartbeatRoute: ApiPublicDevicesHeartbeatRoute,
+  ApiPublicDevicesSignalIdRoute: ApiPublicDevicesSignalIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

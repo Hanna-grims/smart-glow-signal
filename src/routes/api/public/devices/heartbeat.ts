@@ -36,7 +36,12 @@ export const Route = createFileRoute("/api/public/devices/heartbeat")({
           if (readErr) throw readErr;
           if (!current) throw new Error("Unknown light_id");
 
-          const patch: Record<string, unknown> = {
+          const patch: {
+            connection: "online";
+            last_seen: string;
+            waiting_time?: number;
+            signal?: "GREEN" | "RED" | "YELLOW";
+          } = {
             connection: "online",
             last_seen: new Date().toISOString(),
           };
@@ -44,7 +49,7 @@ export const Route = createFileRoute("/api/public/devices/heartbeat")({
 
           // In MANUAL mode the operator override wins; otherwise use the reported signal.
           if (current.mode === "MANUAL" && current.manual_signal) {
-            patch.signal = current.manual_signal;
+            patch.signal = current.manual_signal as "GREEN" | "RED" | "YELLOW";
           } else if (data.signal) {
             patch.signal = data.signal;
           }
