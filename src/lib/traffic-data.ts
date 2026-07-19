@@ -28,7 +28,7 @@ export const trafficLights: Record<TrafficLightId, TrafficLight> = {
   A: {
     id: "A",
     name: "Traffic Light A",
-    location: "Intersection – Main St. & 1st Ave.",
+    location: "Intersection 1 – Brgy.Tabi One Lane Road",
     connection: "online",
     signal: "GREEN",
     waitingTime: 12,
@@ -37,7 +37,7 @@ export const trafficLights: Record<TrafficLightId, TrafficLight> = {
   B: {
     id: "B",
     name: "Traffic Light B",
-    location: "Intersection – Rizal Ave. & Park Rd.",
+    location: "Intersection 1 – Brgy.Tabi One Lane Road",
     connection: "online",
     signal: "RED",
     waitingTime: 27,

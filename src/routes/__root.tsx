@@ -79,13 +79,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ATMSCS — Adaptive Traffic Monitoring & Signal Control" },
+      { title: "VC-Lane — Traffic Monitoring & Signal Control" },
       {
         name: "description",
         content:
           "Operator dashboard for the Adaptive Traffic Monitoring and Signal Control System — monitor Traffic Light A and B in real time.",
       },
-      { property: "og:title", content: "ATMSCS — Adaptive Traffic Monitoring & Signal Control" },
+      { property: "og:title", content: "VC-Lane — Traffic Monitoring & Signal Control" },
       {
         property: "og:description",
         content: "Real-time monitoring dashboard for two adaptive traffic lights.",
@@ -137,7 +137,7 @@ function RootComponent() {
               <SidebarTrigger />
               <div className="min-w-0">
                 <div className="truncate text-sm font-semibold">
-                  Adaptive Traffic Monitoring & Signal Control System
+                  VC-Lane Traffic Monitoring & Signal Control System
                 </div>
                 <div className="truncate text-xs text-muted-foreground">
                   Operator Dashboard
