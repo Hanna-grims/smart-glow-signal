@@ -14,7 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      detections: {
+        Row: {
+          confidence: number | null
+          detected_at: string
+          id: string
+          light_id: string
+          signal: string | null
+          vehicle_type: string
+        }
+        Insert: {
+          confidence?: number | null
+          detected_at?: string
+          id?: string
+          light_id: string
+          signal?: string | null
+          vehicle_type: string
+        }
+        Update: {
+          confidence?: number | null
+          detected_at?: string
+          id?: string
+          light_id?: string
+          signal?: string | null
+          vehicle_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "detections_light_id_fkey"
+            columns: ["light_id"]
+            isOneToOne: false
+            referencedRelation: "traffic_lights"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      traffic_lights: {
+        Row: {
+          connection: string
+          id: string
+          last_seen: string | null
+          location: string
+          manual_signal: string | null
+          mode: string
+          name: string
+          signal: string
+          stream_url: string | null
+          updated_at: string
+          waiting_time: number
+        }
+        Insert: {
+          connection?: string
+          id: string
+          last_seen?: string | null
+          location: string
+          manual_signal?: string | null
+          mode?: string
+          name: string
+          signal?: string
+          stream_url?: string | null
+          updated_at?: string
+          waiting_time?: number
+        }
+        Update: {
+          connection?: string
+          id?: string
+          last_seen?: string | null
+          location?: string
+          manual_signal?: string | null
+          mode?: string
+          name?: string
+          signal?: string
+          stream_url?: string | null
+          updated_at?: string
+          waiting_time?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
