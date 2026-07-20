@@ -28,17 +28,17 @@ function Dashboard() {
     : 0;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
+    <div className="mx-auto w-full max-w-7xl px-4 py-5 md:px-8 md:py-8">
       <PageHeader
-        eyebrow="Operator Dashboard"
+        eyebrow="Operator"
         title="Live Traffic Overview"
-        description="Select a traffic light to open its live monitoring view."
+        description="Tap a traffic light to open its live monitoring view."
       />
 
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatMini icon={<Activity className="h-4 w-4" />} label="Active Signals" value={`${onlineCount} / ${lights.length}`} />
-        <StatMini icon={<Camera className="h-4 w-4" />} label="Cameras Online" value={String(cameras)} />
-        <StatMini icon={<Timer className="h-4 w-4" />} label="Avg. Wait" value={`${avgWait}s`} />
+      <div className="mb-6 grid grid-cols-3 gap-2 sm:gap-4">
+        <StatMini icon={<Activity className="h-4 w-4" />} label="Active" value={`${onlineCount}/${lights.length}`} />
+        <StatMini icon={<Camera className="h-4 w-4" />} label="Cameras" value={String(cameras)} />
+        <StatMini icon={<Timer className="h-4 w-4" />} label="Avg Wait" value={`${avgWait}s`} />
       </div>
 
       {isLoading ? (
