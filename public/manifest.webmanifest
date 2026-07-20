@@ -1,0 +1,25 @@
+{
+  "name": "VC-Lane Traffic Monitoring",
+  "short_name": "VC-Lane",
+  "description": "Operator app for the VC-Lane Adaptive Traffic Monitoring and Signal Control System.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff7ed",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
