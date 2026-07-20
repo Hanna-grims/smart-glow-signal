@@ -88,10 +88,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "VC-Lane — Traffic Monitoring & Signal Control" },
       {
         property: "og:description",
-        content: "Real-time monitoring dashboard for two adaptive traffic lights.",
+        content: "Operator dashboard for the Adaptive Traffic Monitoring and Signal Control System — monitor Traffic Light A and B in real time.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "VC-Lane — Traffic Monitoring & Signal Control" },
+      { name: "twitter:description", content: "Operator dashboard for the Adaptive Traffic Monitoring and Signal Control System — monitor Traffic Light A and B in real time." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0d1b1f58-09b6-45d1-bd0f-f422a774475f/id-preview-1d7fb4c4--ba97b929-41c2-4844-8eb4-dee556ae5517.lovable.app-1784455343708.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0d1b1f58-09b6-45d1-bd0f-f422a774475f/id-preview-1d7fb4c4--ba97b929-41c2-4844-8eb4-dee556ae5517.lovable.app-1784455343708.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
