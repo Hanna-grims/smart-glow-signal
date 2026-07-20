@@ -13,18 +13,18 @@ interface PageHeaderProps {
  */
 export function PageHeader({ eyebrow, title, description, actions }: PageHeaderProps) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+    <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border pb-4 md:mb-8 md:pb-6">
       <div className="min-w-0">
         {eyebrow ? (
-          <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary md:text-xs">
             {eyebrow}
           </div>
         ) : null}
-        <h1 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+        <h1 className="font-display text-xl font-semibold tracking-tight md:text-3xl">
           {title}
         </h1>
         {description ? (
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground md:text-base">
+          <p className="mt-1 max-w-2xl text-xs text-muted-foreground md:mt-2 md:text-base">
             {description}
           </p>
         ) : null}

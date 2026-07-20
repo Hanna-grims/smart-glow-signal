@@ -1,4 +1,4 @@
-import { createFileRoute, notFound, Link } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +28,6 @@ import {
   Bike,
   Truck,
   Timer,
-  ArrowLeft,
   Play,
   Pause,
   RotateCcw,
@@ -82,37 +81,30 @@ function MonitorPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
-      <div className="mb-6">
-        <Button asChild variant="ghost" size="sm" className="-ml-2 mb-2 h-8 text-muted-foreground">
-          <Link to="/">
-            <ArrowLeft className="mr-1 h-4 w-4" /> Dashboard
-          </Link>
-        </Button>
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-          <div className="min-w-0">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              Live Monitoring
-            </div>
-            <h1 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {light.name}
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">{light.location}</p>
+    <div className="mx-auto w-full max-w-7xl px-4 py-5 md:px-8 md:py-8">
+      <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 border-b border-border pb-4">
+        <div className="min-w-0">
+          <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
+            Live Monitoring
           </div>
-          <div className="flex flex-col items-end gap-1">
-            <Badge
-              variant="outline"
-              className={
-                online
-                  ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
-                  : "border-destructive/40 bg-destructive/10 text-destructive"
-              }
-            >
-              {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
-              {online ? "Online" : "Offline"}
-            </Badge>
-            <span className="text-xs text-muted-foreground">Last seen: {timeAgo(light.last_seen)}</span>
-          </div>
+          <h1 className="truncate font-display text-xl font-semibold tracking-tight md:text-3xl">
+            {light.name}
+          </h1>
+          <p className="mt-1 truncate text-xs text-muted-foreground md:text-sm">{light.location}</p>
+        </div>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <Badge
+            variant="outline"
+            className={
+              online
+                ? "border-signal-green/40 bg-signal-green/10 text-signal-green"
+                : "border-destructive/40 bg-destructive/10 text-destructive"
+            }
+          >
+            {online ? <Wifi className="mr-1 h-3 w-3" /> : <WifiOff className="mr-1 h-3 w-3" />}
+            {online ? "Online" : "Offline"}
+          </Badge>
+          <span className="text-[10px] text-muted-foreground">{timeAgo(light.last_seen)}</span>
         </div>
       </div>
 
